@@ -31,6 +31,19 @@ double Market::from_mds(const string& objtype, const string& name)
     return ins.first->second;
 }
 
+std::map<string, double> Market::curve_from_mds(const string& objtype, const string& name)
+{
+	std::map<string, double> curve = m_mds->getCurve(name); //["10Y", 0.1]
+	m_risk_factors = curve; // TODO: This is surely not optimal
+	return curve;
+}
+
+const std::map<string, double> Market::get_yield_curve(const string& ccyname)
+{
+	string name(ir_rate_prefix + ccyname);
+	return curve_from_mds("yield curve", name);
+};
+
 const double Market::get_yield(const string& ccyname)
 {
     string name(ir_rate_prefix + ccyname);

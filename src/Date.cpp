@@ -44,19 +44,13 @@ void Date::check_valid(unsigned y, unsigned m, unsigned d)
     MYASSERT(d >= 1 && d <= dmax, "The day must be a integer between 1 and " << dmax << ", got " << d);
 }
 
-unsigned Date::day_of_year() const
-{
-    return days_ytd[m_m - 1] + ((m_m > 2 && m_is_leap) ? 1 : 0) + (m_d - 1);
-}
-
-
 /*  The function calculates the distance between two Dates.
     d1 > d2 is allowed, which returns the negative of d2-d1.
 */
 long operator-(const Date& d1, const Date& d2)
 {
-    unsigned s1 = d1.serial();
-    unsigned s2 = d2.serial();
+    unsigned s1 = d1.serial;
+    unsigned s2 = d2.serial;
     return static_cast<long>(s1) - static_cast<long>(s2);
 }
 

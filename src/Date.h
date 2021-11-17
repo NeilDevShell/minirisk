@@ -27,33 +27,36 @@ private:
 
 public:
     // Default constructor
-    Date() : m_y(1970), m_m(1), m_d(1), m_is_leap(false) {}
-
+    // Date() : m_y(1970), m_m(1), m_d(1), m_is_leap(false) {}
+    Date() : serial(0) {}
     // Constructor where the input value is checked.
     Date(unsigned year, unsigned month, unsigned day)
     {
         init(year, month, day);
     }
 
+    Date(unsigned i_serial)
+    {
+        serial = i_serial;
+    }
+
     void init(unsigned year, unsigned month, unsigned day)
     {
         check_valid(year, month, day);
-        m_y = (unsigned short) year;
-        m_m = (unsigned char) month;
-        m_d = (unsigned char) day;
-        m_is_leap = is_leap_year(year);
+        bool m_is_leap = is_leap_year(year);
+        serial = days_epoch[year - 1900] + days_ytd[month - 1] + ((month > 2 && m_is_leap) ? 1 : 0) + (day - 1);
     }
 
     static void check_valid(unsigned y, unsigned m, unsigned d);
 
     bool operator<(const Date& d) const
     {
-        return (m_y < d.m_y) || (m_y == d.m_y && (m_m < d.m_m || (m_m == d.m_m && m_d < d.m_d)));
+        return serial < d.serial;
     }
 
     bool operator==(const Date& d) const
     {
-        return (m_y == d.m_y) && (m_m == d.m_m) && (m_d == d.m_d);
+        return serial == d.serial;
     }
 
     bool operator>(const Date& d) const
@@ -61,27 +64,56 @@ public:
         return d < (*this);
     }
 
-    // number of days since 1-Jan-1900
-    unsigned serial() const
-    {
-        return days_epoch[m_y - 1900] + day_of_year();
-    }
-
     static bool is_leap_year(unsigned yr);
-
+    unsigned long m_serial() const
+    {
+        return serial;
+    }
     // In YYYYMMDD format
     std::string to_string(bool pretty = true) const
     {
+        unsigned long m_y = first_year;
+        unsigned long m_m = 12;
+        unsigned long m_d;
+        unsigned long t_serial = serial; 
+        bool is_leap_month = false;
+        while(t_serial >= 365)
+        {
+            ++m_y;
+            t_serial -= 365;
+            if (Date::is_leap_year(m_y))
+            {
+                if(t_serial == 59)
+                {
+                    is_leap_month = true;
+                }
+                if(t_serial > 59)
+                {
+                    --t_serial;
+                }
+            }
+        }
+
+        while (t_serial < days_ytd[m_m - 1])
+        {
+            --m_m;
+            if (m_m == 3 && Date::is_leap_year(m_y) && is_leap_month)
+            {
+                --m_m;
+                break;
+                t_serial += days_ytd[m_m - 1];
+            }
+        }
+        t_serial -= days_ytd[m_m - 1];
+        
+        m_d = t_serial + 1;
         return pretty
             ? std::to_string((int)m_d) + "-" + std::to_string((int)m_m) + "-" + std::to_string(m_y)
             : std::to_string(m_y) + padding_dates((int)m_m) + padding_dates((int)m_d);
     }
 
 private:
-    unsigned short m_y;
-    unsigned char m_m;
-    unsigned char m_d;
-    bool m_is_leap;
+    unsigned long serial;
 };
 
 long operator-(const Date& d1, const Date& d2);

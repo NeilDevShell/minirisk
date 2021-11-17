@@ -17,6 +17,7 @@ private:
     std::shared_ptr<const I> get_curve(const string& name);
 
     double from_mds(const string& objtype, const string& name);
+	std::map<string, double> curve_from_mds(const string& objtype, const string& name);
 
 public:
 
@@ -36,6 +37,9 @@ public:
 
     // yield rate for currency name
     const double get_yield(const string& name);
+
+	// get yield tenors and values for currency name
+	const std::map<string, double> get_yield_curve(const string& name);
 
     // fx exchange rate to convert 1 unit of ccy1 into USD
     const double get_fx_spot(const string& ccy);

@@ -29,6 +29,13 @@ struct my_ofstream
     void endl() { m_of << std::endl; }
     void close() { m_of.close(); }
     std::ofstream m_of;
+
+
+private:
+	union S {
+		double d; // double
+		uint64_t h; // hex
+	};
 };
 
 struct my_ifstream
@@ -57,11 +64,31 @@ private:
     string m_line;
     std::istringstream m_line_stream;
     std::ifstream m_if;
+	
 };
 
 //
 // Generic file streamer
 //
+
+union S
+{
+	uint64_t h; 
+	double d; 
+};
+
+inline my_ifstream& operator>> (my_ifstream& is, double& v)
+{
+	string tmp = is.read_token();
+
+	string prefix("0x");
+	tmp = prefix + tmp;
+	union { double d; uint64_t u; } S;
+	S.u = strtoull(tmp.c_str(), NULL, 16);
+	v = S.d;
+	//std::cout << v << std::endl;
+	return is;
+}
 
 template <typename T>
 inline my_ifstream& operator>>(my_ifstream& is, T& v)
@@ -84,10 +111,14 @@ inline my_ofstream& operator<<(my_ofstream& os, const T& v)
 
 
 // when saving a double to a file in text format, use the maximum possible precision
-inline my_ofstream& operator<<(my_ofstream& os, double v)
+inline my_ofstream& operator<<(my_ofstream& os, const double & v)
 {
-    os.m_of << std::scientific << std::setprecision(16) << v << separator;
-    return os;
+	union { double d; uint64_t h; } S;
+	S.d = v;
+	os.m_of << std::hex << S.h << separator;;
+	return os;
+    //os.m_of << std::scientific << std::setprecision(16) << v << separator;
+    //return os;
 }
 
 
@@ -143,13 +174,21 @@ inline my_ofstream& operator<<(my_ofstream& os, const Date& d)
 
 inline my_ifstream& operator>>(my_ifstream& is, Date& v)
 {
-    string tmp;
-    is >> tmp;
-    unsigned y = std::atoi(tmp.substr(0, 4).c_str());
-    unsigned m = std::atoi(tmp.substr(4, 2).c_str());
-    unsigned d = std::atoi(tmp.substr(6, 2).c_str());
-    v.init(y, m, d);
-    return is;
+	string tmp;
+	is >> tmp;
+	if (tmp.length() == 8) {
+		unsigned y = std::atoi(tmp.substr(0, 4).c_str());
+		unsigned m = std::atoi(tmp.substr(4, 2).c_str());
+		unsigned d = std::atoi(tmp.substr(6, 2).c_str());
+		v.init(y, m, d);
+	}
+	//support - type
+	else {
+		unsigned serial = std::atoi(tmp.c_str());
+		Date test(serial);
+		v = test;
+	}
+	return is;
 }
 
 } // namespace minirisk
