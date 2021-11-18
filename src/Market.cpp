@@ -33,8 +33,9 @@ double Market::from_mds(const string& objtype, const string& name)
 
 std::map<string, double> Market::curve_from_mds(const string& objtype, const string& name)
 {
-	std::map<string, double> curve = m_mds->getCurve(name); //["10Y", 0.1]
-	m_risk_factors = curve; // TODO: This is surely not optimal
+	std::map<string, double> curve = m_mds->getCurve(name); //["10Y", 0.03] TODO: think about how to optimize
+	for (auto tenor_value : curve) // Example: this_tenor = ["IR.10Y.USD", 0.03]
+		m_risk_factors.emplace(tenor_value.first, tenor_value.second);
 	return curve;
 }
 

@@ -89,9 +89,9 @@ std::map<std::string, double> MarketDataServer::match_curve(const std::string& e
 	{
 		if (std::regex_match(iter.first, r))
 		{
-			const std::string tenor = iter.first.substr(3, iter.first.length() - 7);
+			//const std::string tenor = iter.first.substr(3, iter.first.length() - 7);
 			const double rate = iter.second;
-			result[tenor] = rate;
+			result[iter.first] = rate;
 		}
 	}
 
