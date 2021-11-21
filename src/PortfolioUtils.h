@@ -12,7 +12,7 @@ struct Market;
 typedef std::vector<std::pair<double,string>> portfolio_values_t;
 
 // get pricer for each trade
-std::vector<ppricer_t> get_pricers(const portfolio_t& portfolio);
+std::vector<ppricer_t> get_pricers(const portfolio_t& portfolio, const string& base_ccy);
 
 // compute prices
 portfolio_values_t compute_prices(const std::vector<ppricer_t>& pricers, Market& mkt);
