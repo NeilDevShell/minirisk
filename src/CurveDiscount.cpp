@@ -122,7 +122,7 @@ double  CurveDiscount::df(const Date& t) const
 		}
 	}
 
-	for (iter = m_curve_interpolated.begin(); iter != m_curve_calculated.end(); iter++)
+	for (iter = m_curve_interpolated.begin(); iter != m_curve_interpolated.end(); iter++)
 	{
 		if (days_from_today < iter->first) // TODO; how about day t is smaller than the 
 		{

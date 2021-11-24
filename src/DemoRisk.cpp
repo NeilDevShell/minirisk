@@ -48,11 +48,24 @@ void run(const string& portfolio_file, const string& risk_factors_file, const st
     }
 
     {   // Compute PV01 (i.e. sensitivity with respect to interest rate dV/dr)
-        std::vector<std::pair<string, portfolio_values_t>> pv01(compute_pv01(pricers,mkt));  // PV01 per trade
+        std::vector<std::pair<string, portfolio_values_t>> pv01_bucketed(compute_pv01_bucketed(pricers,mkt));  // PV01 per trade
 
         // display PV01 per currency
-        for (const auto& g : pv01)
-            print_price_vector("PV01 " + g.first, g.second);
+        for (const auto& g : pv01_bucketed)
+            print_price_vector("PV01 bucketed " + g.first, g.second);
+
+		// Compute PV01 (i.e. sensitivity with respect to interest rate dV/dr)
+		std::vector<std::pair<string, portfolio_values_t>> pv01_parallel(compute_pv01_parallel(pricers, mkt));  // PV01 per trade
+
+		// display PV01 per currency
+		for (const auto& g : pv01_parallel)
+			print_price_vector("PV01 parallel " + g.first, g.second);
+
+		std::vector<std::pair<string, portfolio_values_t>> fx_delta(compute_fx_delta(pricers, mkt));
+	
+		// display fxdelta
+		for (const auto& g : fx_delta)
+			print_price_vector("FX delta " + g.first, g.second);
     }
 }
 

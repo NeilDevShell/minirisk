@@ -13,7 +13,7 @@ struct MarketDataServer
 {
 public:
     MarketDataServer(const string& filename);
-
+	MarketDataServer(std::map<string, double>risk_fsctors);
     // queries
     double get(const string& name) const;
 	std::map<std::string, double> getCurve(const string& name) const;

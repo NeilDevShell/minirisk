@@ -15,6 +15,12 @@ string mds_spot_name(const string& name)
     return name.substr(0, name.length() - 4);
 }
 
+// construct a dummy marketdataserver based on m_risk_factors
+MarketDataServer::MarketDataServer(std::map<string, double>risk_fsctors)
+{
+	m_data = risk_fsctors;
+}
+
 MarketDataServer::MarketDataServer(const string& filename)
 {
     std::ifstream is(filename);

@@ -18,6 +18,7 @@ private:
 
     double from_mds(const string& objtype, const string& name);
 	std::map<string, double> curve_from_mds(const string& objtype, const string& name);
+	std::map<string, double> curve_from_risk_factors(const string& name);
 
 public:
 
