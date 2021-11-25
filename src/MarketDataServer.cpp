@@ -32,7 +32,7 @@ MarketDataServer::MarketDataServer(const string& filename)
         //std::cout << name << " " << value << "\n";
         auto ins = m_data.emplace(name, value);
         MYASSERT(ins.second, "Duplicated risk factor: " << name);
-    } while (is);
+    } while (is); // TODO: original code is wrong and always reads one extra line
 }
 
 double MarketDataServer::get(const string& name) const

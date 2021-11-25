@@ -22,9 +22,11 @@ struct ICurve : IObject
 
 // forward declaration
 struct ICurveDiscount;
+struct ICurveFXForward;
 
 typedef std::shared_ptr<const ICurve> ptr_curve_t;
 typedef std::shared_ptr<const ICurveDiscount> ptr_disc_curve_t;
+typedef std::shared_ptr<const ICurveFXForward> ptr_fx_forward_curve_t;
 
 struct ICurveDiscount : ICurve
 {

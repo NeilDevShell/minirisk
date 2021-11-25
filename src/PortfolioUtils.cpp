@@ -1,6 +1,7 @@
 #include "Global.h"
 #include "PortfolioUtils.h"
 #include "TradePayment.h"
+#include "TradeFXForward.h"
 
 #include <limits>
 #include <numeric>
@@ -31,7 +32,7 @@ portfolio_values_t compute_prices(const std::vector<ppricer_t>& pricers, Market&
     std::transform(pricers.begin(), pricers.end(), prices.begin()
         , [&mkt](auto& pp) ->  std::pair<double,string>
         {
-            try { return std::pair<double,string>(pp->price(mkt),""); }
+            try { return std::pair<double,string>(pp->price(mkt, mkt.get_fds()),""); } //TODO: this is actually not need since mkt alreay contains fds in our design
             catch(std::exception& e)
             {
                 return std::pair<double,string>(NaN, e.what());
@@ -266,6 +267,8 @@ ptrade_t load_trade(my_ifstream& is)
 
     if (id == TradePayment::m_id)
         p.reset(new TradePayment);
+	else if (id == TradeFXForward::m_id)
+		p.reset(new TradeFXForward);
     else
         THROW("Unknown trade type:" << id);
 

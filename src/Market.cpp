@@ -1,6 +1,6 @@
 #include "Market.h"
 #include "CurveDiscount.h"
-
+#include "CurveFXForward.h"
 #include <vector>
 
 namespace minirisk {
@@ -19,6 +19,11 @@ std::shared_ptr<const I> Market::get_curve(const string& name)
 const ptr_disc_curve_t Market::get_discount_curve(const string& name)
 {
     return get_curve<ICurveDiscount, CurveDiscount>(name);
+}
+
+const ptr_fx_forward_curve_t Market::get_fx_forward(const string& name)
+{
+	return get_curve<ICurveFXForward, CurveFXForward>(name);
 }
 
 double Market::from_mds(const string& objtype, const string& name)

@@ -7,14 +7,13 @@
 
 namespace minirisk {
 
-	CurveFXForward::CurveFXForward(Market* mkt, const string& name, const Date& today, const Date& future_date)
+	CurveFXForward::CurveFXForward(Market* mkt, const Date& today, const string& name)
 		:
 		m_mkt(mkt),
 		m_curve_spot(mkt, name),//changed
 		m_base_ccy(get_base_ccy(name)),
 		m_quote_ccy(get_quote_ccy(name)),
 		m_today(today),
-		m_future_date(future_date),
 		m_base_curve_discount(mkt->get_discount_curve(m_base_ccy)),
 		m_quote_curve_discount(mkt->get_discount_curve(m_quote_ccy))
 		//m_base_curvediscount(mkt,today,ir_curve_discount_prefix+m_base_ccy),
@@ -22,9 +21,9 @@ namespace minirisk {
 	{
 	}
 
-	double CurveFXForward::forward()
+	double CurveFXForward::fwd(const Date& future_date) const
 	{
-		return m_curve_spot.spot() * m_base_curve_discount->df(m_future_date) / m_quote_curve_discount->df(m_future_date);
+		return m_curve_spot.spot() * m_base_curve_discount->df(future_date) / m_quote_curve_discount->df(future_date);
 		//changed
 	}
 
@@ -44,4 +43,15 @@ namespace minirisk {
 	{
 		return curve_spot.spot();
 	}
+
+	string CurveFXForward::name() const
+	{
+		return fx_forward_prefix + m_quote_ccy + "." + m_base_ccy;
+	}
+
+	Date CurveFXForward::today() const
+	{
+		return m_today;
+	}
+
 }

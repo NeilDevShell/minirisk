@@ -4,6 +4,7 @@
 #include "IObject.h"
 #include "ICurve.h"
 #include "MarketDataServer.h"
+#include "FixingDataServer.h"
 #include <vector>
 #include <regex>
 
@@ -30,11 +31,20 @@ public:
         , m_mds(mds)
     {
     }
+	Market(const std::shared_ptr<const MarketDataServer>& mds, const Date& today, const std::shared_ptr<const FixingDataServer>& fds )
+		: m_today(today)
+		, m_mds(mds)
+		, m_fds(fds)
+	{
+	}
 
     virtual Date today() const { return m_today; }
 
     // get an object of type ICurveDisocunt
     const ptr_disc_curve_t get_discount_curve(const string& name);
+
+	// get an object of type ICurveFXForward
+	const ptr_fx_forward_curve_t get_fx_forward(const string& name);
 
     // yield rate for currency name
     const double get_yield(const string& name);
@@ -64,9 +74,13 @@ public:
     // destroy all existing objects and modify a selected number of data points
     void set_risk_factors(const vec_risk_factor_t& risk_factors);
 
+	// return fixing data server
+	const FixingDataServer get_fds() { return *m_fds; };
+
 private:
     Date m_today;
     std::shared_ptr<const MarketDataServer> m_mds;
+	std::shared_ptr<const FixingDataServer> m_fds;
 
     // market curves
     std::map<string, ptr_curve_t> m_curves;
