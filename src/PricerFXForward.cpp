@@ -33,6 +33,7 @@ double PricerFXForward::price(Market& mkt, const FixingDataServer & fds) const
 
 	// Date logic here
 	Date t0 = mkt.today();
+	//std::cout << t0  << "," << m_fixing_date << "," << m_delivery_date << std::endl;
 
 	if (t0 < m_fixing_date)
 	{
@@ -71,13 +72,18 @@ double PricerFXForward::price(Market& mkt, const FixingDataServer & fds) const
 	if (!m_ccy_pair.empty())
 	{
 		
+		//CurveFXSpot base_fx_spot(&mkt, m_ccy_pair); //TODO: we should optimize this part
+		/*double spot_rate = mkt.get_fx_spot(m_ccy_pair);
+		std::cout << spot_rate << std::endl;
+		df *= spot_rate;*/
+
 		CurveFXSpot base_fx_spot(&mkt, m_ccy_pair);
 		double test = base_fx_spot.spot();
-		std::cout << test << std::endl;
+		//std::cout << test << std::endl;
 		df *= base_fx_spot.spot();
 	}
         
-
+	//std::cout << m_amt * df << std::endl;
     return m_amt * df;
 }
 

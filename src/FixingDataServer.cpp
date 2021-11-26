@@ -26,7 +26,7 @@ namespace minirisk {
 			else
 				MYASSERT( true, "Cannot recoginze date input " << tmp_date);
 
-			std::cout << name << "," << date << "," << value << std::endl;
+			//std::cout << name << "," << date << "," << value << std::endl;
 			auto ins = m_FixingData.emplace(std::pair<std::string, Date>(name, date), value);
 		} 
 	}
@@ -35,7 +35,7 @@ namespace minirisk {
 	{
 		std::pair<std::string, Date> id(name, t);
 		auto iter = m_FixingData.find(id);
-		MYASSERT(iter != m_FixingData.end(), "fixing data not found");
+		MYASSERT(iter != m_FixingData.end(), "Fixing not found: " << name << "," << t);
 		return iter->second;
 	}
 	std::pair<double, bool> FixingDataServer::lookup(const string& name, const Date& t) const

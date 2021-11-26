@@ -42,14 +42,12 @@ double CurveFXSpot::spot() const
 // transform FX.Spot.EUR.USD to USD
 const string CurveFXSpot::get_base_ccy(const string& name)
 {
-	std::cout << name.substr(9, 3) << std::endl;
 	return name.substr(8,3);
 }
 
 // transform FX.Spot.EUR.USD to USD
 const string CurveFXSpot::get_quote_ccy(const string& name)
 {
-	std::cout << name.substr(13, 3) << std::endl;
 	return name.substr(12, 3);
 }
 

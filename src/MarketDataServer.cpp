@@ -47,7 +47,7 @@ std::map<std::string, double> MarketDataServer::getCurve(const string& name) con
 {
 	//auto iter = m_data.find(name);
 	// generate regex based on curve name
-	const string regex = "IR\..*\.";
+	const string regex = "IR\\..*\\.";
 	const string ccy = name.substr(ir_rate_prefix.length(), 3);
 
 	// Here, instead finding the forward rate which has exactly the same indentifier, eg., IR.USD,

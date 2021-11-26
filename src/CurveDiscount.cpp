@@ -30,10 +30,8 @@ std::map<int, double> CurveDiscount::interpolateCurve(std::map<int, double> curv
 		double prev_value = std::prev(iter)->second;
 		int this_day = iter->first;
 		int prev_day = std::prev(iter)->first;
-		double test = (this_day - prev_day) / 365.0;
-		interpolated_curve[iter->first] = ( this_value - prev_value )/ test; // r(i,i+1)(T(i+1)-T(i))/(T(i+1)-T(i))
-		std::cout << iter->first  << "," << (this_value - prev_value) << "," << ((this_day - prev_day) / 365.0) << std::endl;
-		std::cout << (this_value - prev_value) / test << std::endl;
+		interpolated_curve[iter->first] = ( this_value - prev_value )/ (((double)this_day - (double)prev_day) / 365.0); // r(i,i+1)(T(i+1)-T(i))/(T(i+1)-T(i))
+		//std::cout << iter->first << "," << (this_value - prev_value) / ((double)this_day - (double)prev_day) / 365.0;
 	}
 	return interpolated_curve;
 }
@@ -44,6 +42,7 @@ std::map<int, double> CurveDiscount::calculateCurve(std::map<string, double> ori
 	Date new_date(today.m_serial() + 30)*/
 
 	std::map<int, double> calculated_curve; //
+	calculated_curve[0] = 0;
 	for (auto const& tenor_value : original_curve)
 	{
 		const std::string tenor = tenor_value.first.substr(3, tenor_value.first.length() - 7); //"10Y"
@@ -77,7 +76,7 @@ std::map<int, double> CurveDiscount::calculateCurve(std::map<string, double> ori
 		int total_period = n * day_count;
 		double dt = total_period / 365.0;
 		calculated_curve[total_period] = dt * tenor_value.second;
-		std::cout << total_period << "," << dt * tenor_value.second << std::endl;
+		//std::cout << total_period << "," << dt * tenor_value.second << std::endl;
 	}
 	return calculated_curve;
 }
@@ -89,11 +88,12 @@ bool comp(Date a, Date b)
 
 double  CurveDiscount::df(const Date& t) const
 {
-    MYASSERT((!(t < m_today)), "cannot get discount factor for date in the past: " << t);
+    MYASSERT((!(t < m_today)), "Curve " <<  m_name  << ", DF not available before anchor date " << m_today << ", requested "  << t);
 	// TODO Some of the below functions may be better in Constructor to improve the performance
 	// 1. get the longest tenor and convert to date; throw if t is larger than the farthest date
 	int days_from_today = t.m_serial() - m_today.m_serial();
-	MYASSERT((!(days_from_today > std::prev(m_curve_calculated.end())->first)), "cannot get discount factor for date beyond the longest tenor: " << t);
+	Date last_tenor(m_today.m_serial() + std::prev(m_curve_calculated.end())->first);
+	MYASSERT((!(days_from_today > std::prev(m_curve_calculated.end())->first)), "Curve " << m_name << ", DF not available beyond last tenor date " << last_tenor << ", requested " << t);
 	// 2. based on t, get the closet i and i+1 given all tenors and their corresponding curve (all tenors should be saved into CurveDiscount already)
 	// 3. do interploation and return discount factor
 	
@@ -110,7 +110,7 @@ double  CurveDiscount::df(const Date& t) const
 	int prev_day = 0;
 	double prev_value = 0;
 	double interpolated_rate = 0;
-
+	//std::cout << t << std::endl;
 	std::map<int, double>::const_iterator iter; // TODO: confirm this is correct
 	for ( iter = m_curve_calculated.begin(); iter != m_curve_calculated.end(); iter++ )
 	{
@@ -124,20 +124,18 @@ double  CurveDiscount::df(const Date& t) const
 
 	for (iter = m_curve_interpolated.begin(); iter != m_curve_interpolated.end(); iter++)
 	{
-		if (days_from_today < iter->first) // TODO; how about day t is smaller than the 
+		if (days_from_today < iter->first)
 		{
 			interpolated_rate = iter->second;
 			break;
 		}
 			
 	}
-	double test = (days_from_today - prev_day)/365.0;
-	std::cout << test << std::endl;
-	double df = std::exp(-prev_value-interpolated_rate*(test));
+	double df = std::exp(-prev_value-interpolated_rate*(((double)days_from_today - (double)prev_day) / 365.0));
 																										  // 3.1 r(0,i), r(0,i+1) ---> ri,i+1
 	// 3.2 df
-    double dt = time_frac(m_today, t);
-	std::cout << dt << std::endl;
+    //double dt = time_frac(m_today, t);
+	//std::cout << dt << std::endl;
 	return df;
 }
 

@@ -96,7 +96,7 @@ std::vector<std::pair<string, portfolio_values_t>> compute_fx_delta(const std::v
 		tmpmkt.set_risk_factors(bumped);
 
 		// compute estimator of the derivative via central finite differences
-		double dr = 2.0 * bump_size;
+		double dr = 2.0 * bump_size * d.second;
 		std::transform(pv_up.begin(), pv_up.end(), pv_dn.begin(), fx_delta.back().second.begin()
 			, [dr](std::pair<double, string> hi, std::pair<double, string> lo) -> std::pair<double, string>
 			{
@@ -121,7 +121,7 @@ std::vector<std::pair<string, portfolio_values_t>> compute_pv01_parallel(const s
 	const double bump_size = 0.01 / 100;
 
 	// filter risk factors related to IR
-	auto base = mkt.get_risk_factors(ir_rate_prefix + "\..*\." + "[A-Z]{3}");
+	auto base = mkt.get_risk_factors(ir_rate_prefix + ".*\\." + "[A-Z]{3}");
 	// loop through the base to generate below 
 	/*
 		curves_by_ccy = {
@@ -153,7 +153,7 @@ std::vector<std::pair<string, portfolio_values_t>> compute_pv01_parallel(const s
 		std::map<string, double>::iterator iter_2; // For example, iter_2 = ["IR.10Y.USD", 0.02 ]
 
 		std::vector<std::pair<double, string>> pv_up, pv_dn;
-		pv01.push_back(std::make_pair(iter_1->first, std::vector<std::pair<double, string>>(pricers.size())));
+		pv01.push_back(std::make_pair(ir_rate_prefix + iter_1->first, std::vector<std::pair<double, string>>(pricers.size())));
 
 		// bump down and price
 		std::vector<std::pair<string, double>> bumped_dn;
@@ -206,7 +206,7 @@ std::vector<std::pair<string, portfolio_values_t>> compute_pv01_bucketed(const s
     const double bump_size = 0.01 / 100;
 
     // filter risk factors related to IR
-    auto base = mkt.get_risk_factors(ir_rate_prefix + "\..*\."  + "[A-Z]{3}");
+    auto base = mkt.get_risk_factors(ir_rate_prefix + ".*\\."  + "[A-Z]{3}");
 
     // Make a local copy of the Market object, because we will modify it applying bumps
     // Note that the actual market objects are shared, as they are referred to via pointers
