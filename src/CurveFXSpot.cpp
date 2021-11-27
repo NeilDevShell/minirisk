@@ -15,14 +15,14 @@ namespace minirisk {
 	*/
 
 
-CurveFXSpot::CurveFXSpot(Market* mkt, const string& name)
+CurveFXSpot::CurveFXSpot(Market* mkt, const Date& today, const string& name)
 	: 
 	m_fx_spot_name(name),
 	m_base_ccy(get_base_ccy(name)),
 	m_quote_ccy(get_quote_ccy(name)),
 	m_base_ccy_rate(get_ccy_rate(mkt, m_base_ccy)),
 	m_quote_ccy_rate(get_ccy_rate(mkt, m_quote_ccy)),
-	m_today(mkt->today())
+	m_today(today)
 {
 
 }
@@ -57,8 +57,7 @@ const double CurveFXSpot::get_ccy_rate(Market* mkt, const string& name)
 	if ( name == "USD" )
 		return 1.0;
 
-	string postfix(".USD");
-	return mkt->get_fx_spot(fx_spot_prefix + name + postfix);
+	return mkt->get_fx_spot_rate(fx_spot_name(name, "USD"));
 }
 
 string CurveFXSpot::name() const

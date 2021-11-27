@@ -308,8 +308,8 @@ void print_price_vector(const string& name, const portfolio_values_t& values)
         << "========================\n"
         << name << ":\n"
         << "========================\n"
-        << "Total: " << total_value.first
-        <<"\n"<<"Errors:"<<total_value.second.size()
+        << "Total:  " << total_value.first
+        <<"\n"<<"Errors: "<<total_value.second.size()
         <<"\n"
         << "\n========================\n";
 

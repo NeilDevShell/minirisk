@@ -52,7 +52,7 @@ struct TradeFXForward : Trade<TradeFXForward>
         return m_delivery_date;
     }
 
-	const Date& fixing_date() const
+	const Date& fixing_date() const  
 	{
 		return m_fixing_date;
 	}
@@ -71,11 +71,11 @@ private:
 
     void print_details(std::ostream& os) const
     {
-		os << format_label("Strike Level") << m_strike << std::endl;
+		os << format_label("Strike level") << m_strike << std::endl;
 		os << format_label("Base Currency") << m_ccy_1 << std::endl;
         os << format_label("Quote Currency") << m_ccy_2 << std::endl;
 		os << format_label("Fixing Date") << m_fixing_date << std::endl;
-		os << format_label("Delivery Date") << m_delivery_date << std::endl;
+		os << format_label("Settlement Date") << m_delivery_date << std::endl;
     }
 
 private:

@@ -26,6 +26,12 @@ const ptr_fx_forward_curve_t Market::get_fx_forward(const string& name)
 	return get_curve<ICurveFXForward, CurveFXForward>(name);
 }
 
+const ptr_fx_spot_curve_t Market::get_fx_spot(const string& name)
+{
+	return get_curve<ICurveFXSpot, CurveFXSpot>(name);
+}
+
+
 double Market::from_mds(const string& objtype, const string& name)
 {
     auto ins = m_risk_factors.emplace(name, std::numeric_limits<double>::quiet_NaN());
@@ -69,7 +75,7 @@ const double Market::get_yield(const string& ccyname)
     return from_mds("yield curve", name);
 };
 
-const double Market::get_fx_spot(const string& name)
+const double Market::get_fx_spot_rate(const string& name)
 {
     return from_mds("fx spot", mds_spot_name(name));
 }

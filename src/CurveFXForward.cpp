@@ -12,19 +12,16 @@ namespace minirisk {
 		m_mkt(mkt),
 		m_base_ccy(get_base_ccy(name)),
 		m_quote_ccy(get_quote_ccy(name)),
-		m_curve_spot(mkt, fx_spot_name(m_quote_ccy, m_base_ccy)),//changed
+		m_curve_spot(mkt->get_fx_spot(fx_spot_name(m_quote_ccy, m_base_ccy))),//changed
 		m_today(today),
 		m_base_curve_discount(mkt->get_discount_curve(ir_curve_discount_name(m_base_ccy))),
 		m_quote_curve_discount(mkt->get_discount_curve(ir_curve_discount_name(m_quote_ccy)))
-		//m_base_curvediscount(mkt,today,ir_curve_discount_prefix+m_base_ccy),
-		//m_quote_curvediscount(mkt,today,ir_curve_discount_prefix+m_quote_ccy)
 	{
 	}
 
 	double CurveFXForward::fwd(const Date& future_date) const
 	{
-		return m_curve_spot.spot() *  m_quote_curve_discount->df(future_date) / m_base_curve_discount->df(future_date);
-		//changed
+		return m_curve_spot->spot() *  m_quote_curve_discount->df(future_date) / m_base_curve_discount->df(future_date);
 	}
 
 	// transform FX.Forward.EUR.USD to USD

@@ -16,8 +16,8 @@ struct CurveDiscount : ICurveDiscount
     double df(const Date& t) const;
 
     virtual Date today() const { return m_today; }
-	std::map<int, double> calculateCurve(std::map<string, double> original_curve);
-	std::map<int, double> interpolateCurve(std::map<int, double> curve_calculated);
+	std::map<int, double> calculateCurve(const std::map<string, double>& original_curve);
+	std::map<int, double> interpolateCurve(const std::map<int, double>& curve_calculated);
 
 
 private:

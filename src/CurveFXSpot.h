@@ -8,7 +8,7 @@ namespace minirisk {
 
 	struct CurveFXSpot : ICurveFXSpot
 	{
-		CurveFXSpot(Market* mkt, const string& name); //FX.Spot.GBP.EUR
+		CurveFXSpot(Market* mkt, const Date& today, const string& name); //FX.Spot.GBP.EUR
 		virtual double spot() const;
 		//std::pair<string, string> get_fx_spot_pair(const string& name);
 		const string get_base_ccy(const string& name);

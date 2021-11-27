@@ -21,7 +21,7 @@ namespace minirisk {
 		Market* m_mkt;
 		string m_base_ccy;
 		string m_quote_ccy;
-		CurveFXSpot m_curve_spot;
+		ptr_fx_spot_curve_t m_curve_spot;
 		Date m_today;
 		ptr_disc_curve_t m_base_curve_discount;
 		ptr_disc_curve_t m_quote_curve_discount;
