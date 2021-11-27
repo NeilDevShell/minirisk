@@ -24,7 +24,7 @@ namespace minirisk {
 				date.init(y, m, d);
 			}
 			else
-				MYASSERT( true, "Cannot recoginze date input " << tmp_date);
+				THROW( "Cannot recoginze date input " << tmp_date);
 
 			//std::cout << name << "," << date << "," << value << std::endl;
 			auto ins = m_FixingData.emplace(std::pair<std::string, Date>(name, date), value);

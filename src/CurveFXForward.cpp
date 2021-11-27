@@ -36,7 +36,6 @@ namespace minirisk {
 		return name.substr(15, 3);
 	}
 
-
 	string CurveFXForward::name() const
 	{
 		return fx_forward_prefix + m_quote_ccy + "." + m_base_ccy;

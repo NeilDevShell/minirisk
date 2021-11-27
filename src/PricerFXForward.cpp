@@ -33,40 +33,30 @@ double PricerFXForward::price(Market& mkt, const FixingDataServer & fds) const
 
 	// Date logic here
 	Date t0 = mkt.today();
-	//std::cout << t0  << "," << m_fixing_date << "," << m_delivery_date << std::endl;
-
+	double fx_forward_rate = 0;
 	if (t0 < m_fixing_date)
 	{
 		ptr_fx_forward_curve_t fx_forward_crv = mkt.get_fx_forward(m_fx_forward_curve);
-		double fx_forward_rate = fx_forward_crv->fwd(m_fixing_date);
-		df *= (fx_forward_rate - m_strike);
+		fx_forward_rate = fx_forward_crv->fwd(m_fixing_date);
 	}
 	else if (t0 == m_fixing_date)
 	{
 		std::pair<double, bool> fixing = fds.lookup(fx_spot_name(m_ccy_1, m_ccy_2), m_fixing_date);
 		if (fixing.second)
-		{
-			df *= (fixing.first - m_strike);
-		}
+			fx_forward_rate = fixing.first;
 		else
 		{
 			ptr_fx_forward_curve_t fx_forward_crv = mkt.get_fx_forward(m_fx_forward_curve);
-			double fx_forward_rate = fx_forward_crv->fwd(m_fixing_date);
-			df *= (fx_forward_rate - m_strike);
+			fx_forward_rate = fx_forward_crv->fwd(m_fixing_date);
 		}
 	}
-	else if (t0 > m_fixing_date && t0 < m_delivery_date)
-	{
-		double fixing_rate = fds.get(fx_spot_name(m_ccy_1, m_ccy_2), m_fixing_date);
-		df *= (fixing_rate - m_strike);
-	}
-	else if (t0 == m_delivery_date)
-	{
-		double fixing_rate = fds.get(fx_spot_name(m_ccy_1, m_ccy_2), m_fixing_date);
-		df *= (fixing_rate - m_strike); // TODO: df is not needed here, df() should return 1
-	}
+	else if ((t0 > m_fixing_date&& t0 < m_delivery_date) || (t0 == m_delivery_date))
+		fx_forward_rate = fds.get(fx_spot_name(m_ccy_1, m_ccy_2), m_fixing_date);
 	else
-		MYASSERT(true, "pricing date is beyond settlement date: " << m_fixing_date );
+		THROW("Trade dates are illegal: pricing date is " << t0 << ", fixing date is " << m_fixing_date << ", and settlement date is " << m_delivery_date);
+
+
+	df *= (fx_forward_rate - m_strike);
 
 	// Convert trade PV to the consistent portfolio reporting ccy, skip if already the same as trade ccy
 	if (!m_ccy_pair.empty())
