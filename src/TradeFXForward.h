@@ -7,8 +7,8 @@ namespace minirisk {
 /*
 	T1 - Fixing date
 	T2 - Delivery date
-	ccy1 - quote ccy
-	ccy2 - base ccy
+	ccy1 - base ccy
+	ccy2 - quote ccy
 */
 
 struct TradeFXForward : Trade<TradeFXForward>
@@ -22,6 +22,9 @@ struct TradeFXForward : Trade<TradeFXForward>
 
     void init(double quantity, const std::string& ccy_1, const std::string& ccy_2, const double strike, const Date& fixing_date, const Date& delivery_date)
     {
+		// Assert the validity of a FXForward
+		MYASSERT(!(fixing_date > delivery_date), "FXForward: fixing date " << fixing_date << "cannot be beyond settlement date " << delivery_date);
+
         Trade::init(quantity);
 		m_ccy_1 = ccy_1;
 		m_ccy_2 = ccy_2;
@@ -67,6 +70,9 @@ private:
     {
 		is >> m_ccy_1 >> m_ccy_2 >> m_strike >> m_fixing_date >> m_delivery_date;
 
+		// Assert the validity of a FXForward
+		MYASSERT(!(m_fixing_date > m_delivery_date), "FXForward: fixing date " << m_fixing_date << "cannot be beyond settlement date " << m_delivery_date);
+
     }
 
     void print_details(std::ostream& os) const
@@ -81,7 +87,7 @@ private:
 private:
 	string m_ccy_1;
 	string m_ccy_2;
-	double m_strike;
+	double m_strike = 0;
 	Date m_fixing_date;
     Date m_delivery_date;
 	

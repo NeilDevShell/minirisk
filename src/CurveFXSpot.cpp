@@ -9,9 +9,9 @@
 namespace minirisk {
 
 	/*
-	  Example:EURUSD - The price of EUR in USD
-	  USD - Base CCY
-	  EUR - Quote CCY
+	  FX.SPOT.EUR.USD
+	  EUR: base ccy
+	  USD: quote ccy
 	*/
 
 
@@ -28,30 +28,22 @@ CurveFXSpot::CurveFXSpot(Market* mkt, const Date& today, const string& name)
 }
 
 double CurveFXSpot::spot() const
-{
-	/*
-	tricky:
-	1. check any of the cross is USD.
-	2. the order
-*/
-		
+{	
 	return  m_base_ccy_rate / m_quote_ccy_rate;
-
 }
 
-// transform FX.Spot.EUR.USD to USD
+// transform FX.SPOT.EUR.USD to EUR
 const string CurveFXSpot::get_base_ccy(const string& name)
 {
 	return name.substr(8,3);
 }
 
-// transform FX.Spot.EUR.USD to USD
+// transform FX.SPOT.EUR.USD to USD
 const string CurveFXSpot::get_quote_ccy(const string& name)
 {
 	return name.substr(12, 3);
 }
 
-//
 const double CurveFXSpot::get_ccy_rate(Market* mkt, const string& name)
 {
 	if ( name == "USD" )
