@@ -1,4 +1,3 @@
-#pragma once
 #include "CurveFXForward.h"
 #include "Market.h"
 #include "Streamer.h"

@@ -27,22 +27,22 @@ namespace minirisk {
 				THROW( "Cannot recoginze date input " << tmp_date);
 
 			//std::cout << name << "," << date << "," << value << std::endl;
-			auto ins = m_FixingData.emplace(std::pair<std::string, Date>(name, date), value);
+			m_fixing_data.emplace(std::pair<std::string, Date>(name, date), value);
 		} 
 	}
 
 	double FixingDataServer::get(const std::string& name, const Date& t) const
 	{
 		std::pair<std::string, Date> id(name, t);
-		auto iter = m_FixingData.find(id);
-		MYASSERT(iter != m_FixingData.end(), "Fixing not found: " << name << "," << t);
+		auto iter = m_fixing_data.find(id);
+		MYASSERT(iter != m_fixing_data.end(), "Fixing not found: " << name << "," << t);
 		return iter->second;
 	}
 	std::pair<double, bool> FixingDataServer::lookup(const string& name, const Date& t) const
 	{
 		std::pair<std::string, Date> id(name, t);
-		auto iter = m_FixingData.find(id);
-		return (iter != m_FixingData.end())
+		auto iter = m_fixing_data.find(id);
+		return (iter != m_fixing_data.end())
 			? std::make_pair(iter->second, true)
 			: std::make_pair(std::numeric_limits<double>::quiet_NaN(), false);
 	}

@@ -3,6 +3,7 @@
 #include "Macros.h"
 #include <string>
 #include <array>
+#include <Algorithm>
 
 namespace minirisk {
 
@@ -63,7 +64,7 @@ public:
     }
 
     static bool is_leap_year(unsigned yr);
-    unsigned long serial() const
+    unsigned serial() const
     {
         return m_serial;
     }
@@ -71,27 +72,27 @@ public:
     std::string to_string(bool pretty = true) const
     {
 
-        unsigned long t_serial = m_serial; 
-		unsigned long m_d = 0;
-		unsigned short m_m = 0;
+        unsigned t_serial = m_serial; 
+		unsigned m_d = 0;
+		unsigned m_m = 0;
 
 		auto iter_year = std::upper_bound(days_epoch.begin(), days_epoch.end(), m_serial);
 		//std::cout << *std::prev(iter_year) << std::endl;
 		t_serial -= *std::prev(iter_year);
-		unsigned short m_y = first_year + (unsigned short)std::distance(days_epoch.begin(), iter_year) - 1;
+		unsigned m_y = first_year + (unsigned)std::distance(days_epoch.begin(), iter_year) - 1;
 		//std::cout << m_y << std::endl;
 		std::array<unsigned, 12>::const_iterator iter_month;
 		// leap year and any date after Feb 29 in leap year 
 		if (t_serial < 59 || !is_leap_year(m_y))
 		{
 			iter_month = std::upper_bound(days_ytd.begin(), days_ytd.end(), t_serial);
-			m_m = (unsigned short)std::distance(days_ytd.begin(), iter_month);
+			m_m = (unsigned)std::distance(days_ytd.begin(), iter_month);
 		}
 		// Not leap year or any date before Feb 29 in leap year 
 		else
 		{
 			iter_month = std::upper_bound(days_ytd_leap.begin(), days_ytd_leap.end(), t_serial);
-			m_m = (unsigned short)std::distance(days_ytd_leap.begin(), iter_month);
+			m_m = (unsigned)std::distance(days_ytd_leap.begin(), iter_month);
 		}
 		t_serial -= *std::prev(iter_month);
 		/*std::cout << m_m << std::endl;
@@ -99,12 +100,12 @@ public:
 
         m_d = t_serial + 1;
         return pretty
-            ? std::to_string((int)m_d) + "-" + std::to_string((int)m_m) + "-" + std::to_string(m_y)
-            : std::to_string(m_y) + padding_dates((int)m_m) + padding_dates((int)m_d);
+            ? std::to_string(m_d) + "-" + std::to_string(m_m) + "-" + std::to_string(m_y)
+            : std::to_string(m_y) + padding_dates(m_m) + padding_dates(m_d);
     }
 
 private:
-    unsigned long m_serial;
+    unsigned m_serial;
 };
 
 long operator-(const Date& d1, const Date& d2);

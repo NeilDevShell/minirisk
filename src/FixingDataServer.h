@@ -17,7 +17,7 @@ namespace minirisk {
 		std::pair<double, bool> lookup(const std::string& name, const Date& t) const;
 
 	private:
-		std::map<std::pair<std::string, Date>, double> m_FixingData;
+		std::map<std::pair<std::string, Date>, double> m_fixing_data;
 	};
 
 }

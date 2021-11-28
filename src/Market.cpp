@@ -2,6 +2,7 @@
 #include "CurveDiscount.h"
 #include "CurveFXForward.h"
 #include <vector>
+#include <limits>
 
 namespace minirisk {
 

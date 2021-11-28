@@ -2,7 +2,7 @@
 #include "PortfolioUtils.h"
 #include "TradePayment.h"
 #include "TradeFXForward.h"
-
+#include <cmath>
 #include <limits>
 #include <numeric>
 #include <vector>
@@ -87,7 +87,6 @@ std::vector<std::pair<string, portfolio_values_t>> compute_fx_delta(const std::v
 		// bump up and price
 		bumped[0].second = d.second * (1 + bump_size); // bump up
 		tmpmkt.set_risk_factors(bumped);
-
 		pv_up = compute_prices(pricers, tmpmkt);
 
 		// restore original market state for next iteration
@@ -227,11 +226,8 @@ std::vector<std::pair<string, portfolio_values_t>> compute_pv01_bucketed(const s
         // bump up and price
         bumped[0].second = d.second + bump_size; // bump up
         tmpmkt.set_risk_factors(bumped);
-
         pv_up = compute_prices(pricers, tmpmkt);
         
-
-
         // restore original market state for next iteration
         // (more efficient than creating a new copy of the market at every iteration)
         bumped[0].second = d.second;

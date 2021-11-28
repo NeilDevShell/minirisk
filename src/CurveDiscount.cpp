@@ -76,8 +76,8 @@ double  CurveDiscount::df(const Date& t) const
     MYASSERT((!(t < m_today)), "Curve " <<  m_name  << ", DF not available before anchor date " << m_today << ", requested "  << t);
 	// TODO Some of the below functions may be better in Constructor to improve the performance
 	// 1. get the longest tenor and convert to date; throw if t is larger than the farthest date
-	const int days_from_today = t.serial() - m_today.serial();
-	Date last_tenor(m_today.serial() + std::prev(m_curve_calculated.end())->first);
+	const int days_from_today = (int)t.serial() - (int)m_today.serial();
+	Date last_tenor((int)m_today.serial() + std::prev(m_curve_calculated.end())->first);
 	MYASSERT((!(days_from_today > std::prev(m_curve_calculated.end())->first)), "Curve " << m_name << ", DF not available beyond last tenor date " << last_tenor << ", requested " << t);
 	// 2. based on t, get the closet i and i+1 given all tenors and their corresponding curve (all tenors should be saved into CurveDiscount already)
 	// 3. do interploation and return discount factor

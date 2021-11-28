@@ -50,8 +50,8 @@ void Date::check_valid(unsigned y, unsigned m, unsigned d)
 */
 long operator-(const Date& d1, const Date& d2)
 {
-    unsigned s1 = d1.m_serial;
-    unsigned s2 = d2.m_serial;
+    unsigned s1 = d1.serial();
+    unsigned s2 = d2.serial();
     return static_cast<long>(s1) - static_cast<long>(s2);
 }
 
