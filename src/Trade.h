@@ -53,7 +53,7 @@ protected:
     }
 
 private:
-    double m_quantity;
+    double m_quantity = 0.0;
 };
 
 } // namespace minirisk
